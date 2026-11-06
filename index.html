@@ -954,62 +954,9 @@
 
     const waUrl = `https://wa.me/${nomorWA}?text=${text}`;
     window.open(waUrl, '_blank');
+}
 
-            let totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-
-            if (selectedOrderType === 'tausil') {
-                const selectArea = document.getElementById('select-delivery-area');
-                if (!selectArea || !selectArea.value) {
-                    alert("Mohon pilih Wilayah Tujuan Pengiriman.");
-                    return;
-                }
-
-                if (selectedAreaObj && totalQty < selectedAreaObj.minItems) {
-                    alert(`Pengiriman ke ${selectedAreaObj.name} membutuhkan minimal ${selectedAreaObj.minItems} pesanan (saat ini: ${totalQty} pesanan). Silakan tambah menu terlebih dahulu.`);
-                    return;
-                }
-            }
-
-            if (!detail) {
-                let detailMsg = selectedOrderType === 'dine-in' ? "Nomor Meja" : (selectedOrderType === 'tausil' ? "Alamat Detail" : "Estimasi Jam Pengambilan");
-                alert(`Mohon isi ${detailMsg} terlebih dahulu.`);
-                return;
-            }
-
-            let typeTitle = selectedOrderType === 'dine-in' ? "DINE IN (Makan di Tempat)" : (selectedOrderType === 'tausil' ? "TAUSIL (Pengiriman)" : "TAKE AWAY (Bawa Pulang)");
-            let detailLabel = selectedOrderType === 'dine-in' ? "Nomor Meja" : (selectedOrderType === 'tausil' ? "Alamat Detail" : "Jam Pengambilan");
-
-            let text = `*PESANAN BARU - GEPREK ASYIR*%0A`;
-            text += `----------------------------------%0A`;
-            text += `*Tipe Pemesanan:* ${typeTitle}%0A`;
-            text += `*Nama Pemesan:* ${name}%0A`;
-            if (selectedOrderType === 'tausil' && selectedAreaObj) {
-                text += `*Wilayah Tausil:* ${selectedAreaObj.name}%0A`;
-            }
-            text += `*${detailLabel}:* ${detail}%0A`;
-            if (note) text += `*Catatan:* ${note}%0A`;
-            text += `----------------------------------%0A`;
-            text += `*DETAIL PESANAN:*%0A`;
-
-            let subtotal = 0;
-            cart.forEach((item, idx) => {
-                let itemTotal = item.price * item.qty;
-                subtotal += itemTotal;
-                text += `${idx + 1}. ${item.name} (${item.option})%0A   ${item.qty} x ${item.price} L.E = *${itemTotal} L.E*%0A`;
-            });
-
-            text += `----------------------------------%0A`;
-            text += `Subtotal Makanan & Minuman: ${subtotal} L.E%0A`;
-            if (selectedOrderType === 'tausil' && selectedAreaObj) {
-                text += `Ongkos Kirim (${selectedAreaObj.name}): ${currentDeliveryFee} L.E%0A`;
-            }
-            let grandTotal = subtotal + (selectedOrderType === 'tausil' ? currentDeliveryFee : 0);
-            text += `*TOTAL PEMBAYARAN: ${grandTotal} L.E*%0A%0A`;
-            text += `Mohon konfirmasi dan segera diproses ya, terima kasih! 🙏`;
-
-            const waUrl = `https://wa.me/${nomorWA}?text=${text}`;
-            window.open(waUrl, '_blank');
-        }
+            
 
         // Initialize Page
         document.addEventListener('DOMContentLoaded', () => {
