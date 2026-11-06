@@ -875,7 +875,7 @@
             updateCartUI();
         }
 
-        // Checkout WhatsApp (Lengkap dengan Subtotal, Ongkir Tausil, & Total Pembayaran)
+        // Checkout WhatsApp (Diverifikasi & Dioptimalkan)
         function checkoutWhatsApp() {
             if (cart.length === 0) {
                 alert("Keranjang Anda masih kosong. Silakan pilih menu terlebih dahulu.");
@@ -894,16 +894,25 @@
 
             let totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
 
+            let activeDeliveryFee = 0;
+            let activeAreaName = "";
+
             if (selectedOrderType === 'tausil') {
                 const selectArea = document.getElementById('select-delivery-area');
                 if (!selectArea || !selectArea.value) {
-                    alert("Mohon pilih Wilayah Tujuan Pengiriman.");
+                    alert("Mohon pilih Wilayah Tujuan Pengiriman terlebih dahulu.");
                     return;
                 }
 
-                if (selectedAreaObj && totalQty < selectedAreaObj.minItems) {
-                    alert(`Pengiriman ke ${selectedAreaObj.name} membutuhkan minimal ${selectedAreaObj.minItems} pesanan (saat ini: ${totalQty} pesanan). Silakan tambah menu terlebih dahulu.`);
-                    return;
+                const currentRateObj = deliveryRates.find(r => r.id === selectArea.value);
+                if (currentRateObj) {
+                    activeDeliveryFee = currentRateObj.fee;
+                    activeAreaName = currentRateObj.name;
+
+                    if (totalQty < currentRateObj.minItems) {
+                        alert(`Pengiriman ke ${currentRateObj.name} membutuhkan minimal ${currentRateObj.minItems} pesanan (saat ini: ${totalQty} pesanan). Silakan tambah menu terlebih dahulu.`);
+                        return;
+                    }
                 }
             }
 
@@ -916,12 +925,13 @@
             let typeTitle = selectedOrderType === 'dine-in' ? "DINE IN (Makan di Tempat)" : (selectedOrderType === 'tausil' ? "TAUSIL (Pengiriman)" : "TAKE AWAY (Bawa Pulang)");
             let detailLabel = selectedOrderType === 'dine-in' ? "Nomor Meja" : (selectedOrderType === 'tausil' ? "Alamat Detail" : "Jam Pengambilan");
 
+            // Format Pesanan WhatsApp
             let text = `*PESANAN BARU - GEPREK ASYIR*%0A`;
             text += `----------------------------------%0A`;
             text += `*Tipe Pemesanan:* ${typeTitle}%0A`;
             text += `*Nama Pemesan:* ${name}%0A`;
-            if (selectedOrderType === 'tausil' && selectedAreaObj) {
-                text += `*Wilayah Tausil:* ${selectedAreaObj.name}%0A`;
+            if (selectedOrderType === 'tausil' && activeAreaName) {
+                text += `*Wilayah Tausil:* ${activeAreaName}%0A`;
             }
             text += `*${detailLabel}:* ${detail}%0A`;
             if (note) text += `*Catatan:* ${note}%0A`;
@@ -935,13 +945,12 @@
                 text += `${idx + 1}. ${item.name} (${item.option})%0A   ${item.qty} x ${item.price} L.E = *${itemTotal} L.E*%0A`;
             });
 
-            let ongkir = (selectedOrderType === 'tausil' && selectedAreaObj) ? currentDeliveryFee : 0;
-            let grandTotal = subtotal + ongkir;
+            let grandTotal = subtotal + (selectedOrderType === 'tausil' ? activeDeliveryFee : 0);
 
             text += `----------------------------------%0A`;
             text += `*Subtotal Makanan & Minuman:* ${subtotal} L.E%0A`;
-            if (selectedOrderType === 'tausil' && selectedAreaObj) {
-                text += `*Ongkos Kirim (${selectedAreaObj.name}):* ${ongkir} L.E%0A`;
+            if (selectedOrderType === 'tausil' && activeDeliveryFee > 0) {
+                text += `*Ongkos Kirim (${activeAreaName}):* ${activeDeliveryFee} L.E%0A`;
             }
             text += `----------------------------------%0A`;
             text += `*TOTAL PEMBAYARAN: ${grandTotal} L.E*%0A%0A`;
