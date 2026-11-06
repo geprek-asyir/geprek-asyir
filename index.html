@@ -715,7 +715,7 @@
             text += `*TOTAL PEMBAYARAN: ${grandTotal} L.E*\n`;
             text += selectedPayment === 'tunai'
                 ? `*Metode Bayar:* Tunai (L.E)\n\n`
-                : `*Metode Bayar:* ${selectedPayment === 'qris' ? 'QRIS' : 'Transfer'}\n*Nominal:* ${formatIDR(grandTotal)} (kurs 100 L.E = ${formatIDR(100)})\n\n`;
+                : `*Metode Bayar:* ${selectedPayment === 'qris' ? 'QRIS' : 'Transfer'}\n*Nominal:* ${formatIDR(grandTotal)} (kurs 2,7 L.E = Rp 1.000)\n\n`;
             text += `Mohon konfirmasi dan segera diproses ya, terima kasih! 🙏`;
 
             window.open(`https://wa.me/${nomorWA}?text=${encodeURIComponent(text)}`, '_blank');
@@ -741,7 +741,7 @@
             a.classList.add('bg-brand-red', 'text-white');
             document.getElementById('pay-note').innerText = m === 'tunai'
                 ? 'Bayar tunai dalam L.E.'
-                : `Dibayar dalam Rupiah (kurs 100 L.E = ${formatIDR(100)}). Detail pembayaran dikirim via WhatsApp.`;
+                : `Dibayar dalam Rupiah (kurs 2,7 L.E = Rp 1.000). Detail pembayaran dikirim via WhatsApp.`;
             updateCartUI();
         }
 
