@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEPREK ASYIR - Jagonya Ayam Geprek</title>
+    <!-- Font Montserrat & ARCO -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.cdnfonts.com/css/arco');
+        
+        .font-arco {
+            font-family: 'ARCO', sans-serif;
+        }
+        .font-montserrat {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f6e7cb;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #edb66d;
+            border-radius: 10px;
+        }
+
+        .bg-cream-warm { background-color: #f6e7cb; }
+        .bg-cream-card { background-color: #fdf8f0; }
+        .bg-cream-gold { background-color: #edb66d; }
+        .bg-brand-red { background-color: #c90106; }
+        .bg-brand-darkred { background-color: #8b050b; }
+        
+        .text-brand-darkred { color: #8b050b; }
+        .text-brand-red { color: #c90106; }
+        .text-cream-gold { color: #edb66d; }
+        
+        .border-brand-gold { border-color: #edb66d; }
+
+        /* Badge Style */
+        .badge-style {
+            background-color: #edb66d;
+            color: #8b050b;
+        }
+
+        /* Tab Pill Active Style */
+        .tab-pill-active {
+            background-color: #c90106 !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 10px rgba(201, 1, 6, 0.25);
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-cream-warm font-montserrat min-h-screen flex flex-col text-slate-800 antialiased">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-white shadow-sm sticky top-0 z-30 border-b border-amber-100">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+            <!-- Brand Logo & Title -->
+            <div class="flex items-center space-x-3">
+                <img src="Logo.png" alt="Geprek Asyir Logo" class="w-11 h-11 object-contain" onerror="this.src='https://via.placeholder.com/50?text=Logo'">
+                <div>
+                    <h1 class="font-arco text-xl text-brand-darkred leading-tight tracking-wide">GEPREK ASYIR</h1>
+                    <p class="text-[10px] font-bold text-brand-red tracking-wider">JAGONYA AYAM GEPREK</p>
+                </div>
+            </div>
+
+            <!-- Cart Trigger Button -->
+            <button onclick="toggleCart(true)" class="relative bg-brand-red hover:bg-red-700 text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm shadow-sm transition flex items-center space-x-2">
+                <span>🛍️</span>
+                <span class="font-bold">Keranjang</span>
+                <span id="cart-badge" class="bg-amber-400 text-brand-darkred text-xs w-5 h-5 rounded-full flex items-center justify-center font-extrabold ml-1">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- HERO BANNER -->
+    <section class="bg-gradient-to-r from-[#8b050b] to-[#c90106] text-white py-10 px-4 text-center shadow-inner relative overflow-hidden">
+        <div class="max-w-3xl mx-auto relative z-10">
+            <span class="bg-amber-400/20 text-amber-200 border border-amber-300/30 text-[11px] font-bold px-3 py-1 rounded-full inline-block mb-3 backdrop-blur-sm">
+                📌 Buka Hari Ini • Pemesanan Praktis via WA
+            </span>
+            <h2 class="font-arco text-2xl sm:text-4xl leading-tight tracking-wide mb-2 text-amber-100">
+                SELAMAT DATANG SAHABAT GEPREK!
+            </h2>
+            <p class="text-xs sm:text-sm text-amber-100/90 max-w-xl mx-auto font-medium">
+                Pilih menu makanan & minuman favorit anda!
+            </p>
+        </div>
+    </section>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex-grow w-full">
+
+        <!-- SEARCH BAR LIVE FILTER -->
+        <div class="max-w-md mx-auto mb-6">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-sm">🔍</span>
+                <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="Cari geprek, combo, atau minuman..." class="w-full pl-10 pr-4 py-2.5 bg-white text-xs sm:text-sm rounded-full border border-amber-200 shadow-sm focus:outline-none focus:border-brand-red transition">
+            </div>
+        </div>
+
+        <!-- TAB CATEGORIES -->
+        <div class="flex items-center justify-start sm:justify-center space-x-2.5 overflow-x-auto pb-4 mb-6 scrollbar-none" id="category-tabs">
+            <button onclick="filterCategory('all')" class="tab-btn tab-pill-active bg-white text-slate-700 hover:bg-slate-100 px-5 py-2 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap border border-amber-200/80 transition">Semua</button>
+            <button onclick="filterCategory('basic')" class="tab-btn bg-white text-slate-700 hover:bg-slate-100 px-5 py-2 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap border border-amber-200/80 transition">Basic Menu</button>
+            <button onclick="filterCategory('special')" class="tab-btn bg-white text-slate-700 hover:bg-slate-100 px-5 py-2 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap border border-amber-200/80 transition">Special Menu</button>
+            <button onclick="filterCategory('combo')" class="tab-btn bg-white text-slate-700 hover:bg-slate-100 px-5 py-2 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap border border-amber-200/80 transition">Geprek Combo</button>
+            <button onclick="filterCategory('drink')" class="tab-btn bg-white text-slate-700 hover:bg-slate-100 px-5 py-2 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap border border-amber-200/80 transition">🥤 Minuman</button>
+        </div>
+
+        <!-- MENU GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="menu-container">
+            <!-- Dynamic Content -->
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white text-slate-500 py-6 text-center text-xs border-t border-amber-100 mt-12">
+        <p class="font-bold text-brand-darkred text-sm">GEPREK ASYIR — Jagonya Ayam Geprek</p>
+        <p class="mt-1 opacity-70">&copy; 2026 GEPREK ASYIR. All Rights Reserved.</p>
+    </footer>
+
+    <!-- MODAL VARIATION SELECTION -->
+    <div id="option-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl relative">
+            <button onclick="closeOptionModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg font-bold">✕</button>
+            <h3 id="modal-item-title" class="text-lg font-bold text-slate-800 pr-6">Pilih Opsi Menu</h3>
+            <p id="modal-item-desc" class="text-xs text-slate-400 mt-1">Silakan pilih variasi paket untuk pesanan ini:</p>
+            
+            <div class="mt-5 space-y-3" id="modal-options-container">
+                <!-- Option buttons injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CART DRAWER (SIDEBAR SLIDE-IN) -->
+    <div id="cart-drawer-overlay" onclick="toggleCart(false)" class="fixed inset-0 bg-black/40 z-40 hidden transition-opacity"></div>
+    
+    <div id="cart-drawer" class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+        <!-- Cart Header -->
+        <div class="bg-brand-darkred text-white p-5 flex items-center justify-between shadow-sm">
+            <div class="flex items-center space-x-2">
+                <span class="text-xl">🛍️</span>
+                <h2 class="font-bold text-base">Keranjang Pesanan</h2>
+            </div>
+            <button onclick="toggleCart(false)" class="text-white hover:bg-white/20 rounded-full w-8 h-8 flex items-center justify-center font-bold">✕</button>
+        </div>
+
+        <!-- Cart Items List -->
+        <div class="flex-grow overflow-y-auto p-5 space-y-3" id="cart-items-container">
+            <!-- Cart items will be rendered here -->
+        </div>
+
+        <!-- Cart Checkout Section -->
+        <div class="p-5 bg-slate-50 border-t border-slate-200 space-y-4">
+            
+            <!-- TIPE PEMESANAN (3 Pilihan) -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-2">Tipe Pemesanan *</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button type="button" onclick="setOrderType('dine-in')" id="btn-type-dine-in" class="order-type-btn bg-brand-red text-white font-bold text-xs py-2.5 rounded-xl text-center shadow-sm">
+                        🍽️ Dine In
+                    </button>
+                    <button type="button" onclick="setOrderType('tausil')" id="btn-type-tausil" class="order-type-btn border border-slate-200 bg-white text-slate-600 font-bold text-xs py-2.5 rounded-xl text-center shadow-sm">
+                        🛵 Tausil
+                    </button>
+                    <button type="button" onclick="setOrderType('takeaway')" id="btn-type-takeaway" class="order-type-btn border border-slate-200 bg-white text-slate-600 font-bold text-xs py-2.5 rounded-xl text-center shadow-sm">
+                        🛍️ Take Away
+                    </button>
+                </div>
+            </div>
+
+            <!-- Form Customer Detail -->
+            <div class="space-y-2">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-700">Nama Pemesan *</label>
+                    <input type="text" id="cust-name" placeholder="Masukkan nama Anda" class="w-full text-xs p-3 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-red bg-white">
+                </div>
+
+                <!-- Input Dinamis Berdasarkan Pemesanan -->
+                <div id="dynamic-field-container">
+                    <label class="block text-[11px] font-bold text-slate-700">Nomor Meja *</label>
+                    <input type="text" id="cust-detail" placeholder="Contoh: Meja 05" class="w-full text-xs p-3 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-red bg-white">
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-700">Catatan Tambahan (Opsional)</label>
+                    <input type="text" id="cust-note" placeholder="Contoh: Sambal dipisah / Es batu sedikit" class="w-full text-xs p-3 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-red bg-white">
+                </div>
+            </div>
+
+            <!-- Rincian & Total Price -->
+            <div class="pt-3 border-t border-slate-200 space-y-1">
+                <div class="flex items-center justify-between text-xs text-slate-500">
+                    <span>Subtotal Makanan & Minuman:</span>
+                    <span id="cart-subtotal" class="font-bold text-slate-700">0 L.E</span>
+                </div>
+                <div id="delivery-fee-row" class="flex items-center justify-between text-xs text-slate-500 hidden">
+                    <span>Ongkos Kirim (Tausil):</span>
+                    <span id="delivery-fee-display" class="font-bold text-brand-red">0 L.E</span>
+                </div>
+                <div class="flex items-center justify-between pt-2">
+                    <span class="text-xs font-bold text-slate-800">Total Pembayaran:</span>
+                    <span id="cart-total-price" class="text-xl font-extrabold text-brand-red">0 L.E</span>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button onclick="checkoutWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl text-sm shadow-md transition flex items-center justify-center space-x-2">
+                <span>📱</span>
+                <span>Kirim Pesanan ke WhatsApp</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const nomorWA = "201234567890"; 
+
+        // Data Tarif Ongkos Kirim & Minimal Pesanan
+        const deliveryRates = [
+            { id: 'h10_1', name: 'Hay Asyir (Musalas - Mahattoh Madrosah)', fee: 5, minItems: 1 },
+            { id: 'h10_2', name: 'Hay Asyir (Bada Mahattoh - Mahdy Arafah)', fee: 10, minItems: 1 },
+            { id: 'h9', name: 'Hay Tasi\'', fee: 10, minItems: 1 },
+            { id: 'h8', name: 'Hay Tsamin', fee: 15, minItems: 2 },
+            { id: 'zahro', name: 'Zahro', fee: 15, minItems: 3 },
+            { id: 'tabbah', name: 'Tabbah', fee: 15, minItems: 3 },
+            { id: 'gami', name: 'Gami', fee: 10, minItems: 1 },
+            { id: 'bawwabat', name: 'Bawwabat', fee: 15, minItems: 1 },
+            { id: 'h7', name: 'Hay Sabi', fee: 25, minItems: 5 },
+            { id: 'abbas', name: 'Abbas Akkad', fee: 25, minItems: 5 }
+        ];
+
+        // Data Menu Lengkap (Basic, Special, Combo, & Minuman)
+        const menuData = [
+            // BASIC MENU
+            {
+                id: 'b1',
+                category: 'basic',
+                name: 'Ayam Geprek/Krispi Sambal Manis',
+                desc: 'Ayam gurih krispi dipadu sambal manis khas Geprek Asyir.',
+                badge: 'Favoritoo',
+                icon: '<img src="manis-chicken.jpg" class="w-full h-full object-cover rounded-2xl">',
+    hasOptions: true,
+                hasOptions: true,
+                options: [
+                    { label: 'Dengan Nasi', price: 80 },
+                    { label: 'Tanpa Nasi', price: 70 }
+                ]
+            },
+            {
+                id: 'b2',
+                category: 'basic',
+                name: 'Ayam Geprek/Krispi Sambal Merah',
+                desc: 'Ayam krispi renyah berpadu dengan sambal cabai merah asli yang pedas mantap.',
+                badge: 'Terlaris',
+                icon: '<img src="merah-chicken.jpg" class="w-full h-full object-cover rounded-2xl">',
+                hasOptions: true,
+                options: [
+                    { label: 'Dengan Nasi', price: 80 },
+                    { label: 'Tanpa Nasi', price: 70 }
+                ]
+            },
+            {
+                id: 'b3',
+                category: 'basic',
+                name: 'Ayam Geprek/Krispi Sambal Hijau',
+                desc: 'Ayam geprek berpadu sambal ijo gurih dan segar menggugah selera.',
+                badge: 'Pedes Seger',
+                icon: '<img src="hijau-chicken.jpg" class="w-full h-full object-cover rounded-2xl">',
+                hasOptions: true,
+                options: [
+                    { label: 'Dengan Nasi', price: 80 },
+                    { label: 'Tanpa Nasi', price: 70 }
+                ]
+            },
+
+            // SPECIAL MENU
+            {
+                id: 's1',
+                category: 'special',
+                name: 'Ayam Geprek/Krispi Fire Chicken',
+                desc: 'Ayam krispi dibaluri saos lava yang juara.',
+                badge: 'Lava Lover Choice',
+                icon: '<img src="fire-chicken.jpg" class="w-full h-full object-cover rounded-2xl">',
+                hasOptions: true,
+                options: [
+                    { label: 'Dengan Nasi', price: 95 },
+                    { label: 'Tanpa Nasi', price: 85 }
+                ]
+            },
+            {
+                id: 's2',
+                category: 'special',
+                name: 'Ayam Geprek/Krispi Richeese',
+                desc: 'Saus keju gurih creamy lezat memanjakan lidah.',
+                badge: 'Rekomendasi',
+                icon: '<img src="richeese-chicken.jpg" class="w-full h-full object-cover rounded-2xl">',
+                hasOptions: true,
+                options: [
+                    { label: 'Dengan Nasi', price: 85 },
+                    { label: 'Tanpa Nasi', price: 85 }
+                ]
+            },
+            {
+                id: 's3',
+                category: 'special',
+                name: 'Ayam Geprek/Krispi 3 Sambal',
+                desc: 'Sensasi 3 rasa sambal dalam satu porsi sajian.',
+                badge: 'Best Combination',
+                icon: '<img src="3sambal-chicken.jpg" class="w-full h-full object-cover rounded-2xl">',
+                hasOptions: true,
+                options: [
+                    { label: 'Dengan Nasi', price: 85 },
+                    { label: 'Tanpa Nasi', price: 90 }
+                ]
+            },
+            {
+                id: 's4',
+                category: 'special',
+                name: 'Ayam Geprek/Krispi Mozarella',
+                desc: 'Keju mozarella mulur meleleh di atas ayam geprek.',
+                badge: 'Cheese Melt',
+                icon: '<img src="moza-chicken.jpg" class="w-full h-full object-cover rounded-2xl">',
+                hasOptions: true,
+                options: [
+                    { label: 'Dengan Nasi', price: 95 },
+                    { label: 'Tanpa Nasi', price: 85 }
+                ]
+            },
+
+            // GEPREK COMBO
+            {
+                id: 'c1',
+                category: 'combo',
+                name: 'Combo Jayyid',
+                desc: 'Paket Hemat: 5 Ayam + 5 Nasi + 5 Sambal',
+                badge: 'Hemat Rame-Rame',
+                icon: '<img src="jayyid.jpg" class="w-full h-full object-cover rounded-2xl">',
+    hasOptions: true,
+                hasOptions: false,
+                price: 380
+            },
+            {
+                id: 'c2',
+                category: 'combo',
+                name: 'Combo Jayyid Jiddan',
+                desc: 'Paket Pesta: 7 Ayam + 7 Nasi + 7 Sambal',
+                badge: 'Pilihan Favorit',
+                icon: '<img src="jayjid.jpg" class="w-full h-full object-cover rounded-2xl">',
+    hasOptions: true,
+                hasOptions: false,
+                price: 540
+            },
+            {
+                id: 'c3',
+                category: 'combo',
+                name: 'Combo Mumtazz',
+                desc: 'Paket Puas Banget: 9 Ayam + 9 Nasi + 9 Sambal',
+                badge: 'Super Komplit',
+                icon: '<img src="mumtaz.jpg" class="w-full h-full object-cover rounded-2xl">',
+    hasOptions: true,
+                hasOptions: false,
+                price: 700
+            },
+
+            // MINUMAN (DRINKS)
+            {
+                id: 'd1',
+                category: 'drink',
+                name: 'Teh',
+                desc: 'Teh manis nikmat sajian dingin atau hangat.',
+                badge: 'Segar',
+                icon: '🍵',
+                hasOptions: true,
+                options: [
+                    { label: 'Dingin', price: 20 },
+                    { label: 'Hangat', price: 20 }
+                ]
+            },
+            {
+                id: 'd2',
+                category: 'drink',
+                name: 'Jeruk',
+                desc: 'Sajian perasan jeruk manis alami penyegar dahaga.',
+                badge: 'Favorit',
+                icon: '🍊',
+                hasOptions: true,
+                options: [
+                    { label: 'Dingin', price: 20 },
+                    { label: 'Hangat', price: 20 }
+                ]
+            },
+            {
+                id: 'd3',
+                category: 'drink',
+                name: 'Mangga',
+                desc: 'Minuman rasa mangga buah harum khas.',
+                badge: 'Buah Segar',
+                icon: '🥭',
+                hasOptions: true,
+                options: [
+                    { label: 'Dingin', price: 20 },
+                    { label: 'Hangat', price: 20 }
+                ]
+            },
+            {
+                id: 'd4',
+                category: 'drink',
+                name: 'Lemon',
+                desc: 'Sajian lemon segar asam manis pemulih stamina.',
+                badge: 'Segar Asam',
+                icon: '🍋',
+                hasOptions: true,
+                options: [
+                    { label: 'Dingin', price: 25 },
+                    { label: 'Hangat', price: 25 }
+                ]
+            },
+            {
+                id: 'd5',
+                category: 'drink',
+                name: 'Lemon Tea',
+                desc: 'Perpaduan sempurna racikan teh & kesegaran lemon.',
+                badge: 'Rekomendasi',
+                icon: '🍹',
+                hasOptions: true,
+                options: [
+                    { label: 'Dingin', price: 25 },
+                    { label: 'Hangat', price: 25 }
+                ]
+            },
+            {
+                id: 'd6',
+                category: 'drink',
+                name: 'Sirup Lemon',
+                desc: 'Olahan sirup lemon legit dan manis asam khas.',
+                badge: 'Manis Asam',
+                icon: '🧪',
+                hasOptions: true,
+                options: [
+                    { label: 'Dingin', price: 20 },
+                    { label: 'Hangat', price: 20 }
+                ]
+            },
+            {
+                id: 'd7',
+                category: 'drink',
+                name: 'Teh Susu',
+                desc: 'Seduhan teh kental dengan campuran susu creamy manis.',
+                badge: 'Creamy',
+                icon: '🧋',
+                hasOptions: true,
+                options: [
+                    { label: 'Dingin', price: 25 },
+                    { label: 'Hangat', price: 25 }
+                ]
+            },
+            {
+                id: 'd8',
+                category: 'drink',
+                name: 'Susu',
+                desc: 'Susu murni lezat penambah energi.',
+                badge: 'Sehat',
+                icon: '🥛',
+                hasOptions: true,
+                options: [
+                    { label: 'Dingin', price: 25 },
+                    { label: 'Hangat', price: 25 }
+                ]
+            },
+            {
+                id: 'd9',
+                category: 'drink',
+                name: 'Bandung',
+                desc: 'Minuman khas sirup rosella susu manis nan harum.',
+                badge: 'Khas Bandung',
+                icon: '🌸',
+                hasOptions: true,
+                options: [
+                    { label: 'Dingin', price: 30 },
+                    { label: 'Hangat', price: 30 }
+                ]
+            },
+            {
+                id: 'd10',
+                category: 'drink',
+                name: 'Kopi',
+                desc: 'Seduhan kopi nikmat penghilang kantuk.',
+                badge: 'Kopi Hitam',
+                icon: '☕',
+                hasOptions: true,
+                options: [
+                    { label: 'Dingin', price: 35 },
+                    { label: 'Hangat', price: 35 }
+                ]
+            },
+            {
+                id: 'd11',
+                category: 'drink',
+                name: 'Kukubima',
+                desc: 'Minuman energi pembakar semangat seharian.',
+                badge: 'Energy Drink',
+                icon: '⚡',
+                hasOptions: false,
+                price: 35
+            },
+            {
+                id: 'd12',
+                category: 'drink',
+                name: 'X-Tra Joss',
+                desc: 'Minuman kesehatan ekstra joss penyegar tubuh.',
+                badge: 'Laki Punya',
+                icon: '💥',
+                hasOptions: false,
+                price: 35
+            },
+            {
+                id: 'd13',
+                category: 'drink',
+                name: 'Green Tea',
+                desc: 'Teh hijau kaya antioksidan nikmat beraroma.',
+                badge: 'Healthy Tea',
+                icon: '🍃',
+                hasOptions: false,
+                price: 35
+            },
+            {
+                id: 'd14',
+                category: 'drink',
+                name: 'Kukubima Susu',
+                desc: 'Kukubima dipadu gurih manisnya susu mantap.',
+                badge: 'Energy Milk',
+                icon: '🥛⚡',
+                hasOptions: false,
+                price: 40
+            },
+            {
+                id: 'd15',
+                category: 'drink',
+                name: 'X-Tra Joss Susu',
+                desc: 'Kombinasi ekstra joss dengan susu rasa creamy mantap.',
+                badge: 'Favorit Pria',
+                icon: '🥛💥',
+                hasOptions: false,
+                price: 40
+            },
+            {
+                id: 'd16',
+                category: 'drink',
+                name: 'Green Tea Susu',
+                desc: 'Teh hijau berpadu susu murni lembut dan nikmat.',
+                badge: 'Matcha Milk',
+                icon: '🍵🥛',
+                hasOptions: false,
+                price: 40
+            },
+            {
+                id: 'd17',
+                category: 'drink',
+                name: 'Kopi Susu',
+                desc: 'Kopi mantap disiram susu kental manis lezat.',
+                badge: 'Kopi Creamy',
+                icon: '☕🥛',
+                hasOptions: false,
+                price: 40
+            }
+        ];
+
+        // Global State
+        let cart = [];
+        let selectedOrderType = 'dine-in';
+        let currentDeliveryFee = 0;
+        let selectedAreaObj = null;
+        let activeCategory = 'all';
+
+        // Render Menu Items
+        function renderMenu(itemsToRender) {
+            const container = document.getElementById('menu-container');
+            container.innerHTML = '';
+
+            if (itemsToRender.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-slate-400">
+                        <span class="text-4xl block mb-2">🔍</span>
+                        <p class="text-xs font-semibold">Menu yang Anda cari tidak ditemukan.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            itemsToRender.forEach(item => {
+                let priceDisplay = item.hasOptions 
+                    ? `Mulai ${Math.min(...item.options.map(o => o.price))} L.E` 
+                    : `${item.price} L.E`;
+
+                const cardHtml = `
+                    <div class="bg-white rounded-3xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                        <div>
+                            <!-- Header Card Thumbnail -->
+                            <div class="h-44 bg-cream-card rounded-2xl flex items-center justify-center text-6xl mb-4 relative">
+                                <span>${item.icon}</span>
+                                <span class="absolute top-3 right-3 text-brand-darkred text-[11px] font-bold px-3 py-1 rounded-full badge-style shadow-sm">
+                                    ${item.badge}
+                                </span>
+                            </div>
+                            
+                            <!-- Title & Desc -->
+                            <h3 class="font-bold text-slate-800 text-base leading-snug">${item.name}</h3>
+                            <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">${item.desc}</p>
+                        </div>
+
+                        <!-- Price & Action -->
+                        <div class="flex items-center justify-between mt-6 pt-2">
+                            <span class="font-bold text-brand-red text-base sm:text-lg">${priceDisplay}</span>
+                            <button onclick="handleAddToCart('${item.id}')" class="bg-orange-50 hover:bg-orange-100 text-brand-red px-4 py-2 rounded-full font-bold text-xs transition flex items-center space-x-1">
+                                <span>+ Tambah</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            });
+        }
+
+        // Search Filter
+        function handleSearch() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            let baseList = activeCategory === 'all' 
+                ? menuData 
+                : menuData.filter(item => item.category === activeCategory);
+
+            if (query === '') {
+                renderMenu(baseList);
+            } else {
+                const filtered = baseList.filter(item => 
+                    item.name.toLowerCase().includes(query) || 
+                    item.desc.toLowerCase().includes(query)
+                );
+                renderMenu(filtered);
+            }
+        }
+
+        // Category Filter Tabs
+        function filterCategory(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-pill-active');
+            });
+
+            event.currentTarget.classList.add('tab-pill-active');
+            
+            // Reset input pencarian saat pindah kategori
+            document.getElementById('search-input').value = '';
+
+            const filtered = cat === 'all' 
+                ? menuData 
+                : menuData.filter(item => item.category === cat);
+            renderMenu(filtered);
+        }
+
+        // Handle Add to Cart
+        function handleAddToCart(itemId) {
+            const item = menuData.find(m => m.id === itemId);
+            if (!item) return;
+
+            if (item.hasOptions) {
+                openOptionModal(item);
+            } else {
+                addToCart(item.name, item.price, 'Standar');
+            }
+        }
+
+        // Modal Functions
+        function openOptionModal(item) {
+            document.getElementById('modal-item-title').innerText = item.name;
+            const descEl = document.getElementById('modal-item-desc');
+            descEl.innerText = item.category === 'drink' 
+                ? 'Silakan pilih sajian Suhu (Dingin atau Hangat):' 
+                : 'Silakan pilih variasi porsi pesanan:';
+
+            const container = document.getElementById('modal-options-container');
+            container.innerHTML = '';
+
+            item.options.forEach(opt => {
+                let iconOpt = opt.label.includes('Dingin') ? '🧊' : (opt.label.includes('Hangat') ? '☕' : '🍚');
+                container.innerHTML += `
+                    <button onclick="selectOptionAndAdd('${item.name}', ${opt.price}, '${opt.label}')" class="w-full p-3.5 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-amber-100 text-slate-800 flex items-center justify-between transition font-bold text-xs">
+                        <span>${iconOpt} ${opt.label}</span>
+                        <span class="text-brand-red font-extrabold">${opt.price} L.E</span>
+                    </button>
+                `;
+            });
+
+            document.getElementById('option-modal').classList.remove('hidden');
+        }
+
+        function closeOptionModal() {
+            document.getElementById('option-modal').classList.add('hidden');
+        }
+
+        function selectOptionAndAdd(name, price, optionLabel) {
+            addToCart(name, price, optionLabel);
+            closeOptionModal();
+        }
+
+        // Add to Cart State
+        function addToCart(name, price, optionLabel) {
+            const cartItemKey = `${name} (${optionLabel})`;
+            const existing = cart.find(i => i.key === cartItemKey);
+
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({
+                    key: cartItemKey,
+                    name: name,
+                    option: optionLabel,
+                    price: price,
+                    qty: 1
+                });
+            }
+
+            updateCartUI();
+            toggleCart(true);
+        }
+
+        // Update Cart UI
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const badge = document.getElementById('cart-badge');
+            const subtotalDisplay = document.getElementById('cart-subtotal');
+            const totalDisplay = document.getElementById('cart-total-price');
+            const feeRow = document.getElementById('delivery-fee-row');
+            const feeDisplay = document.getElementById('delivery-fee-display');
+
+            container.innerHTML = '';
+
+            let totalQty = 0;
+            let subtotal = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16 text-slate-300">
+                        <span class="text-5xl block mb-3">🛍️</span>
+                        <p class="text-xs font-semibold text-slate-400">Keranjang belanjaanmu masih kosong.</p>
+                    </div>
+                `;
+            } else {
+                cart.forEach((item, index) => {
+                    let itemTotal = item.price * item.qty;
+                    totalQty += item.qty;
+                    subtotal += itemTotal;
+
+                    container.innerHTML += `
+                        <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 flex items-center justify-between shadow-sm">
+                            <div>
+                                <h4 class="font-bold text-xs text-slate-800">${item.name}</h4>
+                                <span class="text-[10px] text-brand-darkred bg-amber-100 px-2 py-0.5 rounded-full font-semibold inline-block mt-1">${item.option}</span>
+                                <div class="text-xs text-brand-red font-bold mt-1">${item.price} L.E x ${item.qty} = ${itemTotal} L.E</div>
+                            </div>
+                            <div class="flex items-center space-x-2 bg-white rounded-xl p-1 shadow-sm border border-slate-100">
+                                <button onclick="changeQty(${index}, -1)" class="w-6 h-6 bg-slate-100 rounded-lg font-bold text-slate-600 text-xs flex items-center justify-center">-</button>
+                                <span class="text-xs font-bold px-1">${item.qty}</span>
+                                <button onclick="changeQty(${index}, 1)" class="w-6 h-6 bg-brand-red text-white rounded-lg font-bold text-xs flex items-center justify-center">+</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            badge.innerText = totalQty;
+            subtotalDisplay.innerText = `${subtotal} L.E`;
+
+            if (selectedOrderType === 'tausil') {
+                feeRow.classList.remove('hidden');
+                feeDisplay.innerText = `${currentDeliveryFee} L.E`;
+            } else {
+                feeRow.classList.add('hidden');
+            }
+
+            let grandTotal = subtotal + (selectedOrderType === 'tausil' ? currentDeliveryFee : 0);
+            totalDisplay.innerText = `${grandTotal} L.E`;
+        }
+
+        function changeQty(index, delta) {
+            cart[index].qty += delta;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartUI();
+        }
+
+        // Cart Drawer Toggle
+        function toggleCart(open) {
+            const drawer = document.getElementById('cart-drawer');
+            const overlay = document.getElementById('cart-drawer-overlay');
+
+            if (open) {
+                drawer.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                drawer.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // Switch Tipe Pemesanan
+        function setOrderType(type) {
+            selectedOrderType = type;
+            const container = document.getElementById('dynamic-field-container');
+            
+            document.querySelectorAll('.order-type-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-red', 'text-white');
+                btn.classList.add('border', 'border-slate-200', 'bg-white', 'text-slate-600');
+            });
+
+            const activeBtn = document.getElementById(`btn-type-${type}`);
+            activeBtn.classList.remove('border', 'border-slate-200', 'bg-white', 'text-slate-600');
+            activeBtn.classList.add('bg-brand-red', 'text-white');
+
+            if (type === 'dine-in') {
+                currentDeliveryFee = 0;
+                selectedAreaObj = null;
+                container.innerHTML = `
+                    <label class="block text-[11px] font-bold text-slate-700">Nomor Meja *</label>
+                    <input type="text" id="cust-detail" placeholder="Contoh: Meja 05" class="w-full text-xs p-3 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-red bg-white">
+                `;
+            } else if (type === 'tausil') {
+                let optionsHtml = deliveryRates.map(r => {
+                    let minNote = r.minItems > 1 ? ` (Min. ${r.minItems} Porsi)` : '';
+                    return `<option value="${r.id}">${r.name} - ${r.fee} L.E${minNote}</option>`;
+                }).join('');
+
+                container.innerHTML = `
+                    <div class="space-y-2">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700">Pilih Wilayah Tujuan (Ongkir) *</label>
+                            <select id="select-delivery-area" onchange="updateDeliveryFee()" class="w-full text-xs p-3 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-red bg-white font-semibold">
+                                <option value="">-- Pilih Wilayah --</option>
+                                ${optionsHtml}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700">Alamat Detail / Patokan *</label>
+                            <input type="text" id="cust-detail" placeholder="Contoh: St. Masjed Al-Noor, No. 12, Lt 3" class="w-full text-xs p-3 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-red bg-white">
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'takeaway') {
+                currentDeliveryFee = 0;
+                selectedAreaObj = null;
+                container.innerHTML = `
+                    <label class="block text-[11px] font-bold text-slate-700">Estimasi Jam Pengambilan *</label>
+                    <input type="text" id="cust-detail" placeholder="Contoh: Jam 18:30 / 30 Menit Lagi" class="w-full text-xs p-3 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-red bg-white">
+                `;
+            }
+            updateCartUI();
+        }
+
+        // Update Ongkir berdasarkan Wilayah
+        function updateDeliveryFee() {
+            const select = document.getElementById('select-delivery-area');
+            const selectedId = select ? select.value : '';
+            const rate = deliveryRates.find(r => r.id === selectedId);
+
+            if (rate) {
+                currentDeliveryFee = rate.fee;
+                selectedAreaObj = rate;
+            } else {
+                currentDeliveryFee = 0;
+                selectedAreaObj = null;
+            }
+            updateCartUI();
+        }
+
+        // Checkout WhatsApp
+        function checkoutWhatsApp() {
+            if (cart.length === 0) {
+                alert("Keranjang Anda masih kosong. Silakan pilih menu terlebih dahulu.");
+                return;
+            }
+
+            const name = document.getElementById('cust-name').value.trim();
+            const detailInput = document.getElementById('cust-detail');
+            const detail = detailInput ? detailInput.value.trim() : '';
+            const note = document.getElementById('cust-note').value.trim();
+
+            if (!name) {
+                alert("Mohon isi Nama Pemesan terlebih dahulu.");
+                return;
+            }
+
+            let totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+
+            if (selectedOrderType === 'tausil') {
+                const selectArea = document.getElementById('select-delivery-area');
+                if (!selectArea || !selectArea.value) {
+                    alert("Mohon pilih Wilayah Tujuan Pengiriman.");
+                    return;
+                }
+
+                if (selectedAreaObj && totalQty < selectedAreaObj.minItems) {
+                    alert(`Pengiriman ke ${selectedAreaObj.name} membutuhkan minimal ${selectedAreaObj.minItems} pesanan (saat ini: ${totalQty} pesanan). Silakan tambah menu terlebih dahulu.`);
+                    return;
+                }
+            }
+
+            if (!detail) {
+                let detailMsg = selectedOrderType === 'dine-in' ? "Nomor Meja" : (selectedOrderType === 'tausil' ? "Alamat Detail" : "Estimasi Jam Pengambilan");
+                alert(`Mohon isi ${detailMsg} terlebih dahulu.`);
+                return;
+            }
+
+            let typeTitle = selectedOrderType === 'dine-in' ? "DINE IN (Makan di Tempat)" : (selectedOrderType === 'tausil' ? "TAUSIL (Pengiriman)" : "TAKE AWAY (Bawa Pulang)");
+            let detailLabel = selectedOrderType === 'dine-in' ? "Nomor Meja" : (selectedOrderType === 'tausil' ? "Alamat Detail" : "Jam Pengambilan");
+
+            let text = `*PESANAN BARU - GEPREK ASYIR*%0A`;
+            text += `----------------------------------%0A`;
+            text += `*Tipe Pemesanan:* ${typeTitle}%0A`;
+            text += `*Nama Pemesan:* ${name}%0A`;
+            if (selectedOrderType === 'tausil' && selectedAreaObj) {
+                text += `*Wilayah Tausil:* ${selectedAreaObj.name}%0A`;
+            }
+            text += `*${detailLabel}:* ${detail}%0A`;
+            if (note) text += `*Catatan:* ${note}%0A`;
+            text += `----------------------------------%0A`;
+            text += `*DETAIL PESANAN:*%0A`;
+
+            let subtotal = 0;
+            cart.forEach((item, idx) => {
+                let itemTotal = item.price * item.qty;
+                subtotal += itemTotal;
+                text += `${idx + 1}. ${item.name} (${item.option})%0A   ${item.qty} x ${item.price} L.E = *${itemTotal} L.E*%0A`;
+            });
+
+            text += `----------------------------------%0A`;
+            text += `Subtotal Makanan & Minuman: ${subtotal} L.E%0A`;
+            if (selectedOrderType === 'tausil' && selectedAreaObj) {
+                text += `Ongkos Kirim (${selectedAreaObj.name}): ${currentDeliveryFee} L.E%0A`;
+            }
+            let grandTotal = subtotal + (selectedOrderType === 'tausil' ? currentDeliveryFee : 0);
+            text += `*TOTAL PEMBAYARAN: ${grandTotal} L.E*%0A%0A`;
+            text += `Mohon konfirmasi dan segera diproses ya, terima kasih! 🙏`;
+
+            const waUrl = `https://wa.me/${nomorWA}?text=${text}`;
+            window.open(waUrl, '_blank');
+        }
+
+        // Initialize Page
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMenu(menuData);
+            updateCartUI();
+        });
+    </script>
+</body>
+</html>
